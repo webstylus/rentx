@@ -1,7 +1,8 @@
 import React from 'react';
 import {Container, Title} from './styles';
+import {RectButtonProps} from "react-native-gesture-handler";
 
-interface Props {
+interface Props extends RectButtonProps{
     title:string
     color?: string
 }

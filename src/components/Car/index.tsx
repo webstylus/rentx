@@ -15,6 +15,7 @@ import {
   Type
 } from './styles'
 import {useTheme} from "styled-components";
+import {RectButtonProps} from "react-native-gesture-handler";
 
 interface CarData {
   id: string
@@ -27,15 +28,15 @@ interface CarData {
   thumbnail: string
 }
 
-interface Props {
+interface Props extends RectButtonProps{
   data: CarData
 }
 
-export function Car({ data }: Props) {
+export function Car({ data, ...rest }: Props) {
   const theme = useTheme()
 
   return (
-    <Container>
+    <Container {...rest}>
       <Details>
         <Brands>{data.brand}</Brands>
         <Name>{data.name}</Name>

@@ -1,5 +1,4 @@
 import React from 'react'
-import { useNavigation } from '@react-navigation/native'
 import {
   Container,
   Header,
@@ -12,13 +11,26 @@ import {
   Rent,
   Period,
   Price,
-  About,
   Accessories,
+  RentalPeriod,
+  CalendarIcon,
+  DateInfo,
+  DateTitle,
+  DateValue,
+  RentalPrice,
+  RentalPriceLabel,
+  RentalPriceDetails,
+  RentalPriceQuota,
+  RentalPriceTotal,
   Footer
 } from './styles'
 import { BackButton } from '../../components/BackButton'
 import { ImageSlider } from '../../components/ImageSlider'
 import { Accessory } from '../../components/Accessory'
+import { Button } from '../../components/Button'
+import { useTheme } from 'styled-components'
+
+import {Feather} from '@expo/vector-icons'
 
 import SpeedSvg from '../../assets/speed.svg'
 import AccelerationSvg from '../../assets/acceleration.svg'
@@ -26,18 +38,16 @@ import ForceSvg from '../../assets/force.svg'
 import GasolineSvg from '../../assets/gasoline.svg'
 import ExchangeSvg from '../../assets/exchange.svg'
 import PeopleSvg from '../../assets/people.svg'
-import { Button } from '../../components/Button'
-import { useTheme } from 'styled-components'
+import {RFValue} from "react-native-responsive-fontsize";
+import {useNavigation} from "@react-navigation/native";
 
-export function CarDetails() {
-  const navigation = useNavigation()
+export function SchedulingDetails() {
   const theme = useTheme()
   const thumbnail = 'https://freepngimg.com/thumb/audi/35227-5-audi-rs5-red.png'
-
-  function handleConfirmRental() {
-    navigation.navigate('Scheduling')
+  const navigation = useNavigation()
+  function handleRentalConfirm(){
+    navigation.navigate('SchedulingComplete')
   }
-
   return (
     <Container>
       <Header>
@@ -70,18 +80,36 @@ export function CarDetails() {
           <Accessory name={'2 pessoas'} icon={PeopleSvg} />
         </Accessories>
 
-        <About>
-          Este é automóvel desportivo. Surgiu do lendário touro de lide
-          indultado na praça Real Maestranza de Sevilla. É um belíssimo carro
-          para quem gosta de acelerar.
-        </About>
+        <RentalPeriod>
+          <CalendarIcon>
+            <Feather name={'calendar'} size={RFValue(24)} color={theme.colors.background_secondary} />
+          </CalendarIcon>
+
+          <DateInfo>
+            <DateTitle>De</DateTitle>
+            <DateValue>25/09/2021</DateValue>
+          </DateInfo>
+          <Feather name={'chevron-right'} size={10} color={theme.colors.text} />
+          <DateInfo>
+            <DateTitle>Até</DateTitle>
+            <DateValue>30/09/2021</DateValue>
+          </DateInfo>
+        </RentalPeriod>
+
+        <RentalPrice>
+          <RentalPriceLabel>Total</RentalPriceLabel>
+          <RentalPriceDetails>
+            <RentalPriceQuota>R$ 580 x3 diárias</RentalPriceQuota>
+            <RentalPriceTotal>R$ 2.900</RentalPriceTotal>
+          </RentalPriceDetails>
+        </RentalPrice>
       </Content>
 
       <Footer>
         <Button
-          color={theme.colors.main}
-          title={'Escolher período do aluguel'}
-          onPress={handleConfirmRental}
+          color={theme.colors.success}
+          title={'Alugar agora'}
+          onPress={handleRentalConfirm}
         />
       </Footer>
     </Container>
