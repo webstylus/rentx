@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components/native'
 import { RFValue } from 'react-native-responsive-fontsize'
-import { getStatusBarHeight } from 'react-native-iphone-x-helper'
-import React from 'react'
+import {getBottomSpace, getStatusBarHeight} from 'react-native-iphone-x-helper'
 
 interface DateValueProps {
   selected: boolean
@@ -9,6 +8,8 @@ interface DateValueProps {
 
 export const Container = styled.View`
   width: 100%;
+  flex: 1;
+  background-color: ${({ theme }) => theme.colors.background_secondary};
 `
 export const Title = styled.Text`
   color: ${({ theme }) => theme.colors.shape};
@@ -44,13 +45,13 @@ export const DateValue = styled.Text<DateValueProps>`
   color: ${({ theme }) => theme.colors.shape};
   font-family: ${({ theme }) => theme.fonts.primary_500};
   font-size: ${RFValue(15)}px;
+  padding-bottom: 15px;
 
   ${({ selected, theme }) =>
     !selected &&
     css`
       border-bottom-width: 1px;
       border-bottom-color: ${({ theme }) => theme.colors.text};
-      padding-bottom: 15px;
     `}
 `
 export const Content = styled.ScrollView.attrs({
@@ -62,5 +63,7 @@ export const Content = styled.ScrollView.attrs({
   
 `
 export const Footer = styled.View`
-  padding: 24px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.background_primary};
+  padding: 24px 24px ${getBottomSpace() + 24}px;
 `

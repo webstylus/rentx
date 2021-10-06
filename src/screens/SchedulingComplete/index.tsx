@@ -1,17 +1,20 @@
 import React from 'react'
-import { Container, Content, Title, SubTitle, ContainerButton } from './styles'
-import LogoSvg from '../../assets/logo_background_gray.svg'
-import DoneSvg from '../../assets/done.svg'
 import { StatusBar, useWindowDimensions } from 'react-native'
 import { Button } from '../../components/Button'
 import { useTheme } from 'styled-components'
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native'
+
+import { Container, Content, Title, SubTitle, ContainerButton } from './styles'
+import LogoSvg from '../../assets/logo_background_gray.svg'
+import DoneSvg from '../../assets/done.svg'
 
 export function SchedulingComplete() {
   const { width } = useWindowDimensions()
   const theme = useTheme()
-    const navigation = useNavigation()
-
+  const navigation = useNavigation()
+    function handleBack() {
+        navigation.navigate('Home')
+    }
   return (
     <Container>
       <StatusBar
@@ -31,7 +34,12 @@ export function SchedulingComplete() {
         </SubTitle>
 
         <ContainerButton>
-          <Button title={'Ok'} color={theme.colors.shape_dark} onPress={() => navigation.navigate('Home')} />
+          <Button
+            title={'Ok'}
+            color={theme.colors.shape_dark}
+            onPress={handleBack}
+            enabled
+          />
         </ContainerButton>
       </Content>
     </Container>

@@ -1,5 +1,13 @@
 import React from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { CarDTO } from '../../dtos/CarDTO'
+
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { BackButton } from '../../components/BackButton'
+import { ImageSlider } from '../../components/ImageSlider'
+import { Accessory } from '../../components/Accessory'
+import { Button } from '../../components/Button'
+import { useTheme } from 'styled-components'
+
 import {
   Container,
   Header,
@@ -16,65 +24,67 @@ import {
   Accessories,
   Footer
 } from './styles'
-import { BackButton } from '../../components/BackButton'
-import { ImageSlider } from '../../components/ImageSlider'
-import { Accessory } from '../../components/Accessory'
 
-import SpeedSvg from '../../assets/speed.svg'
-import AccelerationSvg from '../../assets/acceleration.svg'
-import ForceSvg from '../../assets/force.svg'
-import GasolineSvg from '../../assets/gasoline.svg'
-import ExchangeSvg from '../../assets/exchange.svg'
-import PeopleSvg from '../../assets/people.svg'
-import { Button } from '../../components/Button'
-import { useTheme } from 'styled-components'
+import { getAccessoryIcon } from '../../utils/getAccessoryIcon'
+import { StatusBar } from 'react-native'
+
+interface Params {
+  car: CarDTO
+}
 
 export function CarDetails() {
   const navigation = useNavigation()
   const theme = useTheme()
-  const thumbnail = 'https://freepngimg.com/thumb/audi/35227-5-audi-rs5-red.png'
+  const route = useRoute()
+  const { car } = route.params as Params
+
+  function handleBack() {
+    navigation.goBack()
+  }
 
   function handleConfirmRental() {
-    navigation.navigate('Scheduling')
+    navigation.navigate('Scheduling', { car })
   }
 
   return (
     <Container>
+      <StatusBar
+        barStyle={'dark-content'}
+        translucent
+        backgroundColor={'transparent'}
+      />
       <Header>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={handleBack} />
       </Header>
 
       <CarImages>
-        <ImageSlider imageUrls={[thumbnail]} />
+        <ImageSlider imageUrls={car.photos} />
       </CarImages>
 
       <Content>
         <Details>
           <Description>
-            <Brand>Lamborghini</Brand>
-            <Name>Harucan</Name>
+            <Brand>{car.brand}</Brand>
+            <Name>{car.name}</Name>
           </Description>
 
           <Rent>
-            <Period>Ao dia</Period>
-            <Price>R$ 580</Price>
+            <Period>{car.rent.period}</Period>
+            <Price>R$ {car.rent.price}</Price>
           </Rent>
         </Details>
 
         <Accessories>
-          <Accessory name={'380km/h'} icon={SpeedSvg} />
-          <Accessory name={'3.2s'} icon={AccelerationSvg} />
-          <Accessory name={'800 HP'} icon={ForceSvg} />
-          <Accessory name={'Gasolina'} icon={GasolineSvg} />
-          <Accessory name={'Auto'} icon={ExchangeSvg} />
-          <Accessory name={'2 pessoas'} icon={PeopleSvg} />
+          {car.accessories.map((accessory) => (
+            <Accessory
+              name={accessory.name}
+              icon={getAccessoryIcon(accessory.type)}
+              key={accessory.type}
+            />
+          ))}
         </Accessories>
 
-        <About>
-          Este é automóvel desportivo. Surgiu do lendário touro de lide
-          indultado na praça Real Maestranza de Sevilla. É um belíssimo carro
-          para quem gosta de acelerar.
-        </About>
+        <About>{car.about}</About>
       </Content>
 
       <Footer>
@@ -82,6 +92,7 @@ export function CarDetails() {
           color={theme.colors.main}
           title={'Escolher período do aluguel'}
           onPress={handleConfirmRental}
+          enabled
         />
       </Footer>
     </Container>
