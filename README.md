@@ -4,23 +4,24 @@ Aplicação Expo desenvolvida em React Native usando TypeScript
 ![alt text](https://github.com/webstylus/rentx/blob/main/src/assets/images/cover.png?raw=true)
 
 O Intuito desse App é consumir uma API com uma lista de veículos, e você poder agendar um período de locação.
-Seus veículos alugados ficam disponíveis em sua lista de veículos que você acessa na Home do App.
+Seus veículos alugados ficam disponíveis em sua lista de veículos acessada na Home do App.
 
-####Instalação
+###Instalação
 
 Você precisa ter o expo-cli instalado e configurado em sua máquina
 
 ```
 Executar o servidor de api localmente:
-Configure seu *baseURL* com seu ip e porta definidos
+Configure seu *baseURL* em ./src/services/api.ts com seu ip e porta 
+Execute o comando abaixo substituindo o $ip pelo seu ip de rede local
 
-$ yarn api
+    $ json-server ./src/services/server.json --host $seuip --port 3333 --delay 700
 ```
 
 ```
-$ yarn install
-$ expo start
-$ abra seu emulador de preferência
+    $ yarn install
+    $ expo start
+    $ abra seu emulador de preferência
 ```
 
 Principais pacotes extra instalados
