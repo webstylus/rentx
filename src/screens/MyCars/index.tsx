@@ -85,7 +85,7 @@ export function MyCars() {
             data={cars}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <CarWrapper>
+              <CarWrapper key={item.id}>
                 <Car data={item.car} />
                 <CarFooter>
                   <CarFooterTitle>Período</CarFooterTitle>

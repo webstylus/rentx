@@ -7,36 +7,75 @@ import { ImageSlider } from '../../components/ImageSlider'
 import { Accessory } from '../../components/Accessory'
 import { Button } from '../../components/Button'
 import { useTheme } from 'styled-components'
-
+import Animated, {
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  Extrapolate,
+  interpolateColor
+} from 'react-native-reanimated'
 import {
-  Container,
-  Header,
-  CarImages,
-  Content,
-  Details,
-  Description,
-  Brand,
-  Name,
-  Rent,
-  Period,
-  Price,
   About,
   Accessories,
-  Footer
+  Brand,
+  CarImages,
+  Container,
+  Description,
+  Details,
+  Footer,
+  Header,
+  Name,
+  Period,
+  Price,
+  Rent
 } from './styles'
 
 import { getAccessoryIcon } from '../../utils/getAccessoryIcon'
-import { StatusBar } from 'react-native'
+import { StatusBar, StyleSheet } from 'react-native'
+import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 
 interface Params {
   car: CarDTO
 }
 
 export function CarDetails() {
+  const scrollY = useSharedValue(0)
   const navigation = useNavigation()
   const theme = useTheme()
   const route = useRoute()
   const { car } = route.params as Params
+
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y
+    console.log(event.contentOffset.y)
+  })
+  const headerStyleAnimation = useAnimatedStyle(() => {
+    return {
+      height: interpolate(
+        scrollY.value,
+        [0, 250],
+        [250, 100],
+        Extrapolate.CLAMP
+      )
+    }
+  })
+
+  const sliderCarStyleAnimation = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollY.value, [0, 200], [1, 0], Extrapolate.CLAMP)
+    }
+  })
+
+  const backButtonStyleAnimation = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        scrollY.value,
+        [200, 150],
+        [theme.colors.background_primary, theme.colors.background_secondary]
+      )
+    }
+  })
 
   function handleBack() {
     navigation.goBack()
@@ -53,15 +92,45 @@ export function CarDetails() {
         translucent
         backgroundColor={'transparent'}
       />
-      <Header>
-        <BackButton onPress={handleBack} />
-      </Header>
+      <Animated.View
+        style={[
+          headerStyleAnimation,
+          styles.header,
+          {
+            backgroundColor: theme.colors.background_secondary
+          }
+        ]}
+      >
+        <Header>
+          <Animated.View
+            style={[backButtonStyleAnimation, {
+              borderRadius: 13,
+              width: 26,
+              height: 26,
+              justifyContent: "center",
+              alignItems: "center"
+            }]}
+          >
+            <BackButton onPress={handleBack}/>
+          </Animated.View>
+        </Header>
 
-      <CarImages>
-        <ImageSlider imageUrls={car.photos} />
-      </CarImages>
+        <Animated.View style={sliderCarStyleAnimation}>
+          <CarImages>
+            <ImageSlider imageUrl={car.photos} />
+          </CarImages>
+        </Animated.View>
+      </Animated.View>
 
-      <Content>
+      <Animated.ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingTop: getStatusBarHeight() + 160
+        }}
+        showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+      >
         <Details>
           <Description>
             <Brand>{car.brand}</Brand>
@@ -84,8 +153,15 @@ export function CarDetails() {
           ))}
         </Accessories>
 
-        <About>{car.about}</About>
-      </Content>
+        <About>
+          {car.about}
+          {car.about}
+          {car.about}
+          {car.about}
+          {car.about}
+          {car.about}
+        </About>
+      </Animated.ScrollView>
 
       <Footer>
         <Button
@@ -98,3 +174,11 @@ export function CarDetails() {
     </Container>
   )
 }
+
+const styles = StyleSheet.create({
+  header: {
+    position: 'absolute',
+    overflow: 'hidden',
+    zIndex: 1
+  }
+})

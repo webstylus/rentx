@@ -36,3 +36,4 @@ Principais pacotes extra instalados
 - [@react-navigation/native](https://reactnavigation.org/)
 - [date-fns](https://date-fns.org/)
 - [react-native-calendars](https://github.com/wix/react-native-calendars)
+- [react-native-reanimated](https://docs.expo.dev/versions/latest/sdk/reanimated/)
