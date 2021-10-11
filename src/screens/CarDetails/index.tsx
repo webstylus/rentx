@@ -54,8 +54,8 @@ export function CarDetails() {
     return {
       height: interpolate(
         scrollY.value,
-        [0, 250],
-        [250, 100],
+        [0, 200],
+        [200, 100],
         Extrapolate.CLAMP
       )
     }
@@ -63,7 +63,7 @@ export function CarDetails() {
 
   const sliderCarStyleAnimation = useAnimatedStyle(() => {
     return {
-      opacity: interpolate(scrollY.value, [0, 200], [1, 0], Extrapolate.CLAMP)
+      opacity: interpolate(scrollY.value, [0, 150], [1, 0], Extrapolate.CLAMP)
     }
   })
 
@@ -71,7 +71,7 @@ export function CarDetails() {
     return {
       backgroundColor: interpolateColor(
         scrollY.value,
-        [200, 150],
+        [150, 100],
         [theme.colors.background_primary, theme.colors.background_secondary]
       )
     }

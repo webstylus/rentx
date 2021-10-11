@@ -22,7 +22,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useTheme } from 'styled-components'
 import { Car } from '../../components/Car'
 import { AntDesign } from '@expo/vector-icons'
-import { Loading } from '../../components/Loading'
+import {LoadingAnimation} from "../../components/LoadingAnimation";
 
 interface CarProps {
   id: string
@@ -73,7 +73,7 @@ export function MyCars() {
         <SubTitle>Conforto, segurança e praticidade</SubTitle>
       </Header>
       {loading ? (
-        <Loading />
+        <LoadingAnimation />
       ) : (
         <Content>
           <Appointments>
@@ -83,7 +83,7 @@ export function MyCars() {
 
           <FlatList
             data={cars}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
               <CarWrapper key={item.id}>
                 <Car data={item.car} />
