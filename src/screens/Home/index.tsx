@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { CarDTO } from '../../dtos/CarDTO'
 
 import { useNavigation } from '@react-navigation/native'
-import {BackHandler, StatusBar, StyleSheet} from 'react-native'
+import {StatusBar, StyleSheet} from 'react-native'
 import { Car } from '../../components/Car'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { Ionicons } from '@expo/vector-icons'
@@ -84,12 +84,6 @@ export function Home() {
   useEffect(() => {
     fetchCars().then()
   }, [])
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      return true
-    })
-  })
 
   return (
     <Container>

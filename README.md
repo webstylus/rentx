@@ -38,3 +38,4 @@ Principais pacotes extra instalados
 - [react-native-calendars](https://github.com/wix/react-native-calendars)
 - [react-native-reanimated](https://docs.expo.dev/versions/latest/sdk/reanimated/)
 - [lottie-react-native](https://docs.expo.dev/versions/latest/sdk/lottie/)
+- yup

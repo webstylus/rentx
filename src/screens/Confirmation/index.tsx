@@ -2,19 +2,29 @@ import React from 'react'
 import { StatusBar, useWindowDimensions } from 'react-native'
 import { Button } from '../../components/Button'
 import { useTheme } from 'styled-components'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { Container, Content, Title, SubTitle, ContainerButton } from './styles'
 import LogoSvg from '../../assets/logo_background_gray.svg'
 import DoneSvg from '../../assets/done.svg'
 
-export function SchedulingComplete() {
+interface Params {
+  title: string
+  message: string
+  nextScreenRoute: string
+}
+
+export function Confirmation() {
   const { width } = useWindowDimensions()
   const theme = useTheme()
   const navigation = useNavigation()
-    function handleBack() {
-        navigation.navigate('Home')
-    }
+  const route = useRoute()
+  const { title, message, nextScreenRoute } = route.params as Params
+
+  function handleBack() {
+    navigation.navigate(nextScreenRoute)
+  }
+
   return (
     <Container>
       <StatusBar
@@ -26,12 +36,8 @@ export function SchedulingComplete() {
 
       <Content>
         <DoneSvg width={80} height={80} />
-        <Title>Carro alugado!</Title>
-        <SubTitle>
-          Agora você só precisa ir {'\n'}
-          até a concessionária da RENTX {'\n'}
-          pegar o seu automóvel.
-        </SubTitle>
+        <Title>{title}</Title>
+        <SubTitle>{message}</SubTitle>
 
         <ContainerButton>
           <Button

@@ -13,7 +13,8 @@ import {
 } from '@expo-google-fonts/archivo'
 
 import theme from './src/styles/theme'
-import {Routes} from "./src/routes";
+import { Routes } from './src/routes'
+import { AuthProvider } from './src/hooks/auth'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -30,7 +31,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Routes />
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </ThemeProvider>
   )
 }
