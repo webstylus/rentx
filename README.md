@@ -42,7 +42,7 @@ Principais pacotes extra instalados
 - [react-native-netinfo](https://github.com/react-native-netinfo/react-native-netinfo)
 - [react-native-fast-image](https://github.com/DylanVann/react-native-fast-image)
 
-##Feature para implementar
+##Fix para ajustar
 
 - Alteração de senha
 - Atualização dos dados do perfil só funciona offline, fazer em realtime.
