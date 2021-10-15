@@ -51,3 +51,5 @@ Principais pacotes extra instalados
 - Adicionar animação da tela de CarDetails na tela de SchedulingDetails também.
 - Adiciona link dos veículos alugados para direcionar para CarDetails.
 - Fazer ajustes finos de layout.
+
+[Figma](https://www.figma.com/file/CSmHFEEIr30Ia31et6UKqu/RentX-Ignite---Offline-First?node-id=5985%3A1799)
