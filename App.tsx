@@ -15,6 +15,10 @@ import {
 import theme from './src/styles/theme'
 import { Routes } from './src/routes'
 import { AuthProvider } from './src/hooks/auth'
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Warning: Non-serializable values were found in the navigation state.']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 export default function App() {
   const [fontsLoaded] = useFonts({

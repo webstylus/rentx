@@ -8,20 +8,18 @@ Seus veículos alugados ficam disponíveis em sua lista de veículos acessada na
 
 ###Instalação
 
-Você precisa ter o expo-cli instalado e configurado em sua máquina
+Você precisa ter o expo-cli instalado e configurado
 
 ```
-Executar o servidor de api localmente:
-Configure seu *baseURL* em ./src/services/api.ts com seu ip e porta 
-Execute o comando abaixo substituindo o $ip pelo seu ip de rede local
-
-    $ json-server ./src/services/server.json --host $seuip --port 3333 --delay 700
+Executar o servidor de api localmente: 
+https://github.com/rodrigorgtic/rentx-api-ignite
 ```
 
 ```
     $ yarn install
-    $ expo start
-    $ abra seu emulador de preferência
+    $ yarn start
+    $ abra seu emulador Android
+    $ yarn android 
 ```
 
 Principais pacotes extra instalados
@@ -39,3 +37,17 @@ Principais pacotes extra instalados
 - [react-native-reanimated](https://docs.expo.dev/versions/latest/sdk/reanimated/)
 - [lottie-react-native](https://docs.expo.dev/versions/latest/sdk/lottie/)
 - yup
+- [@nozbe/watermelondb](https://nozbe.github.io/WatermelonDB/)
+- [expo-image-picker](https://docs.expo.dev/versions/latest/sdk/imagepicker/)
+- [react-native-netinfo](https://github.com/react-native-netinfo/react-native-netinfo)
+- [react-native-fast-image](https://github.com/DylanVann/react-native-fast-image)
+
+##Feature para implementar
+
+- Alteração de senha
+- Atualização dos dados do perfil só funciona offline, fazer em realtime.
+- Direcionar para tela de sucesso após salvar dados do Profile
+- Ajustar ScrollView com KeyboardAvoidView na tela de Profile.
+- Adicionar animação da tela de CarDetails na tela de SchedulingDetails também.
+- Adiciona link dos veículos alugados para direcionar para CarDetails.
+- Fazer ajustes finos de layout.

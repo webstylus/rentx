@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { CarDTO } from '../../dtos/CarDTO'
 
+import { useNetInfo } from '@react-native-community/netinfo'
+import { RectButton, PanGestureHandler } from 'react-native-gesture-handler'
+import { synchronize } from '@nozbe/watermelondb/sync'
 import { useNavigation } from '@react-navigation/native'
-import {StatusBar, StyleSheet} from 'react-native'
+import {Alert, StatusBar, StyleSheet} from 'react-native'
 import { Car } from '../../components/Car'
 import { RFValue } from 'react-native-responsive-fontsize'
-import { Ionicons } from '@expo/vector-icons'
+import { useTheme } from 'styled-components'
+import { LoadingAnimation } from '../../components/LoadingAnimation'
+import { Car as ModelCar } from '../../database/model/Cars'
+import { database } from '../../database'
+import { api } from '../../services/api'
 
+import { Ionicons } from '@expo/vector-icons'
 import LogoSvg from '../../assets/logo.svg'
 import {
   Container,
@@ -16,27 +23,23 @@ import {
   CarList
 } from './styles'
 
-import { api } from '../../services/api'
-import { useTheme } from 'styled-components'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   useAnimatedGestureHandler,
-    withSpring
+  withSpring
 } from 'react-native-reanimated'
-import { RectButton, PanGestureHandler } from 'react-native-gesture-handler'
-import {LoadingAnimation} from "../../components/LoadingAnimation";
 
 const ButtonAnimated = Animated.createAnimatedComponent(RectButton)
 
 export function Home() {
+  const netInfo = useNetInfo()
   const theme = useTheme()
   const navigation = useNavigation()
-  const [cars, setCars] = useState<CarDTO[]>({} as CarDTO[])
+  const [cars, setCars] = useState<ModelCar[]>({} as ModelCar[])
   const [isLoading, setIsLoading] = useState(true)
   const positionY = useSharedValue(0)
   const positionX = useSharedValue(0)
-
   const myCarsButtonStyleAnimated = useAnimatedStyle(() => {
     return {
       transform: [
@@ -45,45 +48,72 @@ export function Home() {
       ]
     }
   })
-
   const onGestureEvent = useAnimatedGestureHandler({
-    onStart(_, ctx:any) {
+    onStart(_, ctx: any) {
       ctx.positionX = positionX.value
       ctx.positionY = positionY.value
     },
-    onActive(event, ctx: any){
+    onActive(event, ctx: any) {
       positionX.value = ctx.positionX + event.translationX
       positionY.value = ctx.positionY + event.translationY
     },
-    onEnd(){
+    onEnd() {
       positionX.value = withSpring(0)
       positionY.value = withSpring(0)
-    },
-
+    }
   })
-
-  function handleCarDetails(car: CarDTO) {
+  function handleCarDetails(car: ModelCar) {
     navigation.navigate('CarDetails', { car })
   }
-
-  async function fetchCars() {
-    try {
-      const response = await api.get('/cars')
-      setCars(response.data)
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   function handleMyCars() {
     navigation.navigate('MyCars')
   }
+  async function offlineSynchronize() {
+    await synchronize({
+      database,
+      pullChanges: async ({ lastPulledAt }) => {
+        const response = await api.get(
+          `cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`
+        )
+        const { changes, latestVersion } = response.data
+        return { changes, timestamp: latestVersion }
+      },
+      pushChanges: async ({ changes }) => {
+        const user = changes.users
+        await api.post('/users/sync', user).catch(console.log)
+      }
+    })
+  }
 
   useEffect(() => {
+    let isMounted = true
+    async function fetchCars() {
+      try {
+        const carCollection = database.get<ModelCar>('cars')
+        const cars = await carCollection.query().fetch()
+
+        if (isMounted) {
+          setCars(cars)
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
     fetchCars().then()
+    return () => {
+      isMounted = false
+    }
   }, [])
+  useEffect(() => {
+    if (netInfo.isConnected === true) {
+      offlineSynchronize().then()
+    }
+  }, [netInfo.isConnected])
 
   return (
     <Container>

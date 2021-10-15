@@ -1,5 +1,5 @@
 import React from 'react'
-import { StatusBar, useWindowDimensions } from 'react-native'
+import { Platform, StatusBar, useWindowDimensions } from 'react-native'
 import { Button } from '../../components/Button'
 import { useTheme } from 'styled-components'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -7,6 +7,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { Container, Content, Title, SubTitle, ContainerButton } from './styles'
 import LogoSvg from '../../assets/logo_background_gray.svg'
 import DoneSvg from '../../assets/done.svg'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
 interface Params {
   title: string
@@ -34,7 +35,11 @@ export function Confirmation() {
       />
       <LogoSvg width={width} />
 
-      <Content>
+      <Content
+        style={{
+          marginBottom: Platform.OS === 'ios' ? useBottomTabBarHeight() : 0
+        }}
+      >
         <DoneSvg width={80} height={80} />
         <Title>{title}</Title>
         <SubTitle>{message}</SubTitle>

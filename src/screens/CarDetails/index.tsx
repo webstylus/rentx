@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CarDTO } from '../../dtos/CarDTO'
-
+import { useNetInfo } from '@react-native-community/netinfo'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { BackButton } from '../../components/BackButton'
 import { ImageSlider } from '../../components/ImageSlider'
@@ -28,18 +28,24 @@ import {
   Name,
   Period,
   Price,
-  Rent
+  Rent,
+  OfflineNotification
 } from './styles'
 
 import { getAccessoryIcon } from '../../utils/getAccessoryIcon'
 import { StatusBar, StyleSheet } from 'react-native'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
+import { Car as ModelCar } from '../../database/model/Cars'
+import { api } from '../../services/api'
 
 interface Params {
-  car: CarDTO
+  car: ModelCar
 }
 
 export function CarDetails() {
+  const [carUpdated, setCarUpdated] = useState<CarDTO>({} as CarDTO)
+  const netInfo = useNetInfo()
+
   const scrollY = useSharedValue(0)
   const navigation = useNavigation()
   const theme = useTheme()
@@ -84,6 +90,17 @@ export function CarDetails() {
     navigation.navigate('Scheduling', { car })
   }
 
+  useEffect(() => {
+    async function fetchCarUpdated() {
+      const response = await api.get(`/cars/${car.id}`)
+      setCarUpdated(response.data)
+    }
+
+    if (netInfo.isConnected === true) {
+      fetchCarUpdated().then()
+    }
+  }, [netInfo.isConnected])
+
   return (
     <Container>
       <StatusBar
@@ -102,21 +119,30 @@ export function CarDetails() {
       >
         <Header>
           <Animated.View
-            style={[backButtonStyleAnimation, {
-              borderRadius: 13,
-              width: 26,
-              height: 26,
-              justifyContent: "center",
-              alignItems: "center"
-            }]}
+            style={[
+              backButtonStyleAnimation,
+              {
+                borderRadius: 13,
+                width: 26,
+                height: 26,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }
+            ]}
           >
-            <BackButton onPress={handleBack}/>
+            <BackButton onPress={handleBack} />
           </Animated.View>
         </Header>
 
         <Animated.View style={sliderCarStyleAnimation}>
           <CarImages>
-            <ImageSlider imageUrl={car.photos} />
+            <ImageSlider
+              imageUrl={
+                !!carUpdated.photos
+                  ? carUpdated.photos
+                  : [{ id: car.thumbnail, photo: car.thumbnail }]
+              }
+            />
           </CarImages>
         </Animated.View>
       </Animated.View>
@@ -138,23 +164,23 @@ export function CarDetails() {
 
           <Rent>
             <Period>{car.period}</Period>
-            <Price>R$ {car.price}</Price>
+            <Price>R$ {netInfo.isConnected === true ? car.price : '...'}</Price>
           </Rent>
         </Details>
 
-        <Accessories>
-          {car.accessories.map((accessory) => (
-            <Accessory
-              name={accessory.name}
-              icon={getAccessoryIcon(accessory.type)}
-              key={accessory.type}
-            />
-          ))}
-        </Accessories>
+        {carUpdated.accessories && (
+          <Accessories>
+            {carUpdated.accessories.map((accessory) => (
+              <Accessory
+                name={accessory.name}
+                icon={getAccessoryIcon(accessory.type)}
+                key={accessory.type}
+              />
+            ))}
+          </Accessories>
+        )}
 
-        <About>
-          {car.about}
-        </About>
+        <About>{car.about}</About>
       </Animated.ScrollView>
 
       <Footer>
@@ -162,8 +188,13 @@ export function CarDetails() {
           color={theme.colors.main}
           title={'Escolher período do aluguel'}
           onPress={handleConfirmRental}
-          enabled
+          enabled={netInfo.isConnected === true}
         />
+        {netInfo.isConnected === false && (
+          <OfflineNotification>
+            Conecte-se a internet para ver mais detalhes e agendar seu carro.
+          </OfflineNotification>
+        )}
       </Footer>
     </Container>
   )
